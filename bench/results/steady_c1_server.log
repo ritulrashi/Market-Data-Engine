@@ -1,0 +1,25 @@
+market_data_server listening on port 9401 with 4 worker thread(s), 10 symbols, ring capacity 65536, rate=200000/s
+STATS t=1 produced=207644 clients=0 accepted=0 sent=0 dropped=0
+STATS t=2 produced=408253 clients=1 accepted=1 sent=104745 dropped=0
+STATS t=3 produced=607444 clients=1 accepted=1 sent=303936 dropped=0
+STATS t=4 produced=810027 clients=1 accepted=1 sent=506519 dropped=0
+STATS t=5 produced=1010063 clients=1 accepted=1 sent=706555 dropped=0
+STATS t=6 produced=1210571 clients=1 accepted=1 sent=907037 dropped=0
+STATS t=7 produced=1410720 clients=1 accepted=1 sent=1107212 dropped=0
+STATS t=8 produced=1611246 clients=1 accepted=1 sent=1307738 dropped=0
+STATS t=9 produced=1811466 clients=1 accepted=1 sent=1507958 dropped=0
+STATS t=10 produced=2018214 clients=1 accepted=1 sent=1714706 dropped=0
+STATS t=11 produced=2218499 clients=1 accepted=1 sent=1914991 dropped=0
+STATS t=12 produced=2418823 clients=1 accepted=1 sent=2115315 dropped=0
+STATS t=13 produced=2619018 clients=1 accepted=1 sent=2315510 dropped=0
+STATS t=14 produced=2819243 clients=1 accepted=1 sent=2515712 dropped=0
+STATS t=15 produced=3019426 clients=1 accepted=1 sent=2715883 dropped=0
+STATS t=16 produced=3219786 clients=1 accepted=1 sent=2916278 dropped=0
+STATS t=17 produced=3419971 clients=1 accepted=1 sent=3116463 dropped=0
+STATS t=18 produced=3622700 clients=1 accepted=1 sent=3318750 dropped=0
+STATS t=19 produced=3825158 clients=1 accepted=1 sent=3521650 dropped=0
+STATS t=20 produced=4026077 clients=1 accepted=1 sent=3721374 dropped=0
+STATS t=21 produced=4227408 clients=1 accepted=1 sent=3923900 dropped=0
+STATS t=22 produced=4427605 clients=0 accepted=1 sent=4000002 dropped=0
+shutting down...
+FINAL produced=4427865 accepted=1 sent=4000002 dropped=0

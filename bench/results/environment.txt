@@ -1,0 +1,13 @@
+=== environment ===
+date: 2026-09-08T05:44:23Z
+uname: Linux DESKTOP-4PC1LOK 6.6.87.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Mon Apr 21 17:08:54 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+nproc: 8
+cpu model: 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
+cpu cores (physical): 4 x 1 socket(s)
+threads per core: 2
+compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+cmake: cmake version 3.28.3
+ring capacity: 65536
+workers: 4
+steady rate: 200000/s
+duration per trial: 20s

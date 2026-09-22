@@ -1,0 +1,7 @@
+build*/
+*.o
+*.out
+*.exe
+perf.data*
+callgrind.out.*
+.env

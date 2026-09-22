@@ -1,0 +1,13 @@
+CLIENTS=12 DURATION_S=20 TOTAL_RECEIVED=49950639 AGGREGATE_TPS=2.49753e+06 PER_CONSUMER_TPS=208128 SAMPLES=780484 P50_US=2.33211e+06 P99_US=3.68031e+06 P999_US=3.78821e+06
+  client[0] received=3857006
+  client[1] received=3807647
+  client[2] received=3887221
+  client[3] received=4134317
+  client[4] received=4075374
+  client[5] received=5557505
+  client[6] received=4072441
+  client[7] received=4714893
+  client[8] received=3963621
+  client[9] received=3597156
+  client[10] received=3795662
+  client[11] received=4487796
