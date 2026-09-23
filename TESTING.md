@@ -151,6 +151,13 @@ Bugs found by the audit and tests (all fixed):
    reads; latency recorded for every message; nearest-rank percentiles (each
    reported percentile is an actual observed sample).
 
+6. **Harness latency storage stalled the receiving thread** (found during
+   step 4 benchmarking, not by a unit test). Every latency went into one
+   growing `std::vector`. Each doubling copied hundreds of MB and page-faulted
+   new memory on the receive thread, stalling it 100+ ms and inflating
+   measured stress-mode P99 from 3.5 ms to ~125 ms. *Fix:* fixed 512 KB
+   chunks. Details and evidence are in [BENCHMARKS.md](BENCHMARKS.md#problems-found-during-benchmarking-reported-not-hidden).
+
 Proof that the tests catch bugs 1 and 2: the new `test_ring_buffer.cpp` was
 compiled against the original ring buffer (commit `1fb6dad`). 3 of 11 tests
 failed: `EmptyRingHasNothingToRead`, `DropOldestDropsOnlyOverwrittenItems`
