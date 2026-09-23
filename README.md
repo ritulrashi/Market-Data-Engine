@@ -18,8 +18,8 @@ flowchart LR
     P["Producer thread<br/>OU random walk, 10 symbols"] -->|"publish() never blocks"| R[("SPMC ring buffer<br/>65,536 slots, lock-free")]
     R -->|"try_read(cursor A)"| W1["Epoll worker 1<br/>(level-triggered)"]
     R -->|"try_read(cursor B, C)"| W2["Epoll worker 2<br/>(level-triggered)"]
-    ACC["Acceptor thread"] -. "round-robin new sockets" .-> W1
-    ACC -. .-> W2
+    ACC["Acceptor thread"] -.->|round-robin new sockets| W1
+    ACC -.-> W2
     W1 -->|"24-byte frames"| C1["Client A"]
     W2 -->|"24-byte frames"| C2["Client B"]
     W2 -->|"24-byte frames"| C3["Client C"]
@@ -60,7 +60,9 @@ Same thing as text:
   epoll instance and a set of clients. Each pass, the worker handles socket
   events (hang-ups, errors, EPOLLOUT) and then, for each of its clients,
   drains that client's ring cursor into the client's send queue and flushes
-  it with non-blocking `send()`.
+  it with non-blocking `send()`. Each worker's client map is guarded by a per-worker
+  `std::mutex`. Only the acceptor (adding a client) and the once-per-second
+  stats read ever contend for it; the ring buffer path itself takes no locks.
 
 ### Ring buffer
 Each slot holds the payload (as `std::atomic<uint64_t>` words) and an atomic
@@ -163,7 +165,9 @@ directory for each.
 
 The server prints a `STATS` line every second and a `FINAL` line on
 SIGINT/SIGTERM. The client prints aggregate/per-consumer throughput and
-P50/P99/P99.9/max latency over every received message.
+P50/P99/P99.9/max latency over every received message (nearest-rank, so
+each percentile is a real observed sample). It stores 8 bytes per message
+for this. For long, high-rate load generation, pass `--record-latency 0`.
 
 ## Test
 
@@ -182,3 +186,15 @@ scripts/run_perf.sh                             # perf stat + perf record (needs
 ```
 
 Results, hardware details and analysis are in [BENCHMARKS.md](BENCHMARKS.md).
+Medians of 5 runs on a 4-vCPU (2-core) GitHub Codespace, with server and
+clients on the same VM:
+
+| Consumers | Steady 200k/s: per-consumer ticks/s, P50 / P99 | Unthrottled: aggregate ticks/s, dropped |
+|---:|---|---|
+| 1  | 199,999, 31.5 µs / 1,499.6 µs | 11,167,068, 0.06% |
+| 4  | 200,000, 53.6 µs / 1,345.8 µs | 37,949,293, 2.86% |
+| 12 | 200,003, 84.3 µs / 1,959.0 µs | 46,068,855, 56.75% |
+
+The millisecond P99 and the 12-consumer drops come from CPU
+oversubscription on this small VM (busy-polling workers + 12 client threads
+on 4 vCPUs), which BENCHMARKS.md measures and explains.
