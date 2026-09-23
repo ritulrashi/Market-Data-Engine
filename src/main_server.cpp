@@ -7,6 +7,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <iostream>
+#include <pthread.h>
 #include <string>
 #include <thread>
 
@@ -43,7 +44,10 @@ int main(int argc, char** argv) {
     mde::TickProducer producer(ring, symbols, rate, seed);
 
     std::stop_source producer_stop;
-    std::jthread producer_thread([&](std::stop_token) { producer.run(producer_stop.get_token()); });
+    std::jthread producer_thread([&](std::stop_token) {
+        ::pthread_setname_np(::pthread_self(), "mde-producer");
+        producer.run(producer_stop.get_token());
+    });
 
     mde::BroadcastServer server(ring, port, workers);
     server.start();

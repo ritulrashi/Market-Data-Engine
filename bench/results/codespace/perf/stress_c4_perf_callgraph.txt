@@ -1,0 +1,79 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 27K of event 'task-clock:ppp'
+# Event count (approx.): 27129129102
+#
+# Overhead  Symbol                                                                                                                                                                                                                                 IPC   [IPC Coverage]
+# ........  .....................................................................................................................................................................................................................................  ....................
+#
+    35.69%  [.] mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const                                                                                                                                      -      -            
+            |
+            ---std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+               0x7f05a6808db4
+               start_thread
+               clone3
+
+    12.25%  [.] mde::TickProducer::step_symbol(mde::SymbolState&)                                                                                                                                                                                  -      -            
+            |          
+             --12.21%--mde::TickProducer::run(std::stop_token, unsigned long)
+                       std::thread::_State_impl<std::thread::_Invoker<std::tuple<main::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                       0x7f05a6808db4
+                       start_thread
+                       clone3
+
+     8.01%  [.] 0x0000000000000b5c                                                                                                                                                                                                                 -      -            
+            |
+            ---clock_gettime@@GLIBC_2.17
+               std::chrono::_V2::system_clock::now()
+               mde::TickProducer::run(std::stop_token, unsigned long)
+               std::thread::_State_impl<std::thread::_Invoker<std::tuple<main::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+               0x7f05a6808db4
+               start_thread
+               clone3
+
+     6.30%  [k] _raw_spin_unlock_irqrestore                                                                                                                                                                                                        -      -            
+            |          
+             --5.88%--__wake_up_sync_key
+                       sock_def_readable
+                       tcp_data_ready
+                       |          
+                        --5.83%--tcp_data_queue
+                                  tcp_rcv_established
+                                  tcp_v4_do_rcv
+                                  tcp_v4_rcv
+                                  ip_protocol_deliver_rcu
+                                  ip_local_deliver_finish
+                                  ip_local_deliver
+                                  ip_rcv
+
+     4.97%  [.] mde::TickProducer::run(std::stop_token, unsigned long)                                                                                                                                                                             -      -            
+            |
+            ---std::thread::_State_impl<std::thread::_Invoker<std::tuple<main::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+               0x7f05a6808db4
+               start_thread
+               clone3
+
+     2.60%  [.] __ieee754_log_fma                                                                                                                                                                                                                  -      -            
+            |
+            ---mde::TickProducer::run(std::stop_token, unsigned long)
+               std::thread::_State_impl<std::thread::_Invoker<std::tuple<main::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+               0x7f05a6808db4
+               start_thread
+               clone3
+
+     2.01%  [.] epoll_wait                                                                                                                                                                                                                         -      -            
+            |          
+             --2.00%--mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const
+                       std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                       0x7f05a6808db4
+                       start_thread
+                       clone3
+
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

@@ -9,6 +9,7 @@
 #include <mutex>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <pthread.h>
 #include <stdexcept>
 #include <sys/epoll.h>
 #include <sys/socket.h>
@@ -93,7 +94,10 @@ void BroadcastServer::start() {
             throw std::runtime_error(std::string("epoll_create1() failed: ") + std::strerror(errno));
         }
         Worker* wp = w.get();
-        w->thread = std::make_unique<std::jthread>([this, wp](std::stop_token st) {
+        w->thread = std::make_unique<std::jthread>([this, wp, i](std::stop_token st) {
+            // Named so per-thread profiles (perf, top -H) are readable.
+            const std::string name = "mde-worker-" + std::to_string(i);
+            ::pthread_setname_np(::pthread_self(), name.c_str());
             epoll_event events[kMaxEvents];
             while (!st.stop_requested()) {
                 int n = ::epoll_wait(wp->epoll_fd, events, kMaxEvents, /*timeout_ms=*/0);
@@ -208,6 +212,7 @@ void BroadcastServer::start() {
 }
 
 void BroadcastServer::acceptor_loop(std::stop_token st) {
+    ::pthread_setname_np(::pthread_self(), "mde-acceptor");
     int aep = ::epoll_create1(0);
     epoll_event ev{};
     ev.events = EPOLLIN;

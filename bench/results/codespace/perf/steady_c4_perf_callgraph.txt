@@ -1,0 +1,111 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 19K of event 'task-clock:ppp'
+# Event count (approx.): 19675675656
+#
+# Overhead  Symbol                                                                                             IPC   [IPC Coverage]
+# ........  .................................................................................................  ....................
+#
+    34.34%  [.] epoll_wait                                                                                     -      -            
+            |          
+             --34.28%--mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const
+                       std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                       0x7f799ee66db4
+                       start_thread
+                       clone3
+
+     8.91%  [k] do_syscall_64                                                                                  -      -            
+            |
+            ---entry_SYSCALL_64_after_hwframe
+               |          
+                --8.63%--epoll_wait
+                          mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const
+                          std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                          0x7f799ee66db4
+                          start_thread
+                          clone3
+
+     7.16%  [k] _raw_spin_unlock_irqrestore                                                                    -      -            
+            |          
+             --6.76%--__wake_up_sync_key
+                       sock_def_readable
+                       tcp_data_ready
+                       |          
+                        --6.71%--tcp_data_queue
+                                  tcp_rcv_established
+                                  tcp_v4_do_rcv
+                                  tcp_v4_rcv
+                                  ip_protocol_deliver_rcu
+                                  ip_local_deliver_finish
+                                  ip_local_deliver
+                                  ip_rcv
+
+     5.61%  [.] mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const  -      -            
+            |
+            ---std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+               0x7f799ee66db4
+               start_thread
+               clone3
+
+     3.88%  [k] audit_reset_context.part.0.constprop.0                                                         -      -            
+            |          
+             --3.83%--__audit_syscall_exit
+                       syscall_exit_to_user_mode_prepare
+                       syscall_exit_to_user_mode
+                       do_syscall_64
+                       entry_SYSCALL_64_after_hwframe
+                       |          
+                        --3.70%--epoll_wait
+                                  mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const
+                                  std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                                  0x7f799ee66db4
+                                  start_thread
+                                  clone3
+
+     3.09%  [k] __fdget                                                                                        -      -            
+            |          
+             --2.84%--do_epoll_wait
+                       __x64_sys_epoll_wait
+                       x64_sys_call
+                       do_syscall_64
+                       entry_SYSCALL_64_after_hwframe
+                       epoll_wait
+                       mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const
+                       std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                       0x7f799ee66db4
+                       start_thread
+                       clone3
+
+     3.05%  [k] syscall_exit_to_user_mode_prepare                                                              -      -            
+            |          
+             --2.85%--syscall_exit_to_user_mode
+                       do_syscall_64
+                       entry_SYSCALL_64_after_hwframe
+                       |          
+                        --2.71%--epoll_wait
+                                  mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const
+                                  std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                                  0x7f799ee66db4
+                                  start_thread
+                                  clone3
+
+     2.12%  [k] syscall_trace_enter                                                                            -      -            
+            |          
+             --1.84%--do_syscall_64
+                       entry_SYSCALL_64_after_hwframe
+                       |          
+                        --1.81%--epoll_wait
+                                  mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const
+                                  std::thread::_State_impl<std::thread::_Invoker<std::tuple<mde::BroadcastServer::start()::{lambda(std::stop_token)#1}, std::stop_token> > >::_M_run()
+                                  0x7f799ee66db4
+                                  start_thread
+                                  clone3
+
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

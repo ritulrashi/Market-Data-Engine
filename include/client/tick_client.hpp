@@ -27,7 +27,10 @@ class TickClient {
 public:
     using TickCallback = std::function<void(const TickMessage&)>;
 
-    TickClient(std::string host, std::uint16_t port);
+    // record_latency = false skips storing per-message latencies (8 bytes
+    // per message), for pure load generation, e.g. while profiling. At
+    // ~30M msgs/s a 30 s run would otherwise need >7 GB.
+    TickClient(std::string host, std::uint16_t port, bool record_latency = true);
 
     // Blocks for approximately `duration` (or until the server disconnects),
     // then closes the connection and returns what it measured. If
@@ -38,6 +41,7 @@ public:
 private:
     std::string host_;
     std::uint16_t port_;
+    bool record_latency_;
 };
 
 } // namespace mde

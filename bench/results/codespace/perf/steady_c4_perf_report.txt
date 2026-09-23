@@ -1,0 +1,49 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 19K of event 'task-clock:ppp'
+# Event count (approx.): 19675675656
+#
+# Overhead  Command       Shared Object        Symbol                                                                                             IPC   [IPC Coverage]
+# ........  ............  ...................  .................................................................................................  ....................
+#
+    17.31%  mde-worker-1  libc.so.6            [.] epoll_wait                                                                                     -      -            
+    17.02%  mde-worker-0  libc.so.6            [.] epoll_wait                                                                                     -      -            
+     4.90%  mde-worker-1  [kernel.kallsyms]    [k] do_syscall_64                                                                                  -      -            
+     4.00%  mde-worker-0  [kernel.kallsyms]    [k] do_syscall_64                                                                                  -      -            
+     3.80%  mde-worker-0  [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore                                                                    -      -            
+     3.36%  mde-worker-1  [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore                                                                    -      -            
+     2.98%  mde-worker-0  market_data_server   [.] mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const  -      -            
+     2.63%  mde-worker-1  market_data_server   [.] mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const  -      -            
+     2.04%  mde-worker-1  [kernel.kallsyms]    [k] audit_reset_context.part.0.constprop.0                                                         -      -            
+     1.84%  mde-worker-0  [kernel.kallsyms]    [k] audit_reset_context.part.0.constprop.0                                                         -      -            
+     1.71%  mde-worker-1  [kernel.kallsyms]    [k] __fdget                                                                                        -      -            
+     1.56%  mde-worker-1  [kernel.kallsyms]    [k] syscall_exit_to_user_mode_prepare                                                              -      -            
+     1.50%  mde-worker-0  [kernel.kallsyms]    [k] syscall_exit_to_user_mode_prepare                                                              -      -            
+     1.38%  mde-worker-0  [kernel.kallsyms]    [k] __fdget                                                                                        -      -            
+     1.22%  mde-worker-0  libc.so.6            [.] __GI___pthread_enable_asynccancel                                                              -      -            
+     1.13%  mde-worker-0  [kernel.kallsyms]    [k] syscall_trace_enter                                                                            -      -            
+     0.99%  mde-worker-1  [kernel.kallsyms]    [k] syscall_trace_enter                                                                            -      -            
+     0.85%  mde-worker-0  [kernel.kallsyms]    [k] __audit_syscall_exit                                                                           -      -            
+     0.83%  mde-worker-1  [kernel.kallsyms]    [k] __audit_syscall_exit                                                                           -      -            
+     0.73%  mde-worker-1  [kernel.kallsyms]    [k] srso_alias_safe_ret                                                                            -      -            
+     0.69%  mde-worker-0  [kernel.kallsyms]    [k] srso_alias_safe_ret                                                                            -      -            
+     0.61%  mde-worker-1  [kernel.kallsyms]    [k] kfree                                                                                          -      -            
+     0.59%  mde-worker-0  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5                                                                -      -            
+     0.57%  mde-worker-0  [kernel.kallsyms]    [k] do_epoll_wait                                                                                  -      -            
+     0.57%  mde-worker-1  [kernel.kallsyms]    [k] x64_sys_call                                                                                   -      -            
+     0.57%  mde-worker-1  libc.so.6            [.] __GI___pthread_disable_asynccancel                                                             -      -            
+     0.55%  mde-worker-1  [kernel.kallsyms]    [k] path_put                                                                                       -      -            
+     0.54%  mde-worker-0  [kernel.kallsyms]    [k] kfree                                                                                          -      -            
+     0.53%  mde-worker-0  libc.so.6            [.] __send                                                                                         -      -            
+     0.53%  mde-worker-1  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5                                                                -      -            
+     0.53%  mde-worker-1  [kernel.kallsyms]    [k] __x64_sys_epoll_wait                                                                           -      -            
+     0.51%  mde-worker-0  [kernel.kallsyms]    [k] path_put                                                                                       -      -            
+     0.51%  mde-worker-0  [kernel.kallsyms]    [k] x64_sys_call                                                                                   -      -            
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

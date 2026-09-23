@@ -1,0 +1,38 @@
+# started on Wed Sep 23 03:40:07 2026
+
+
+ Performance counter stats for process id '54815':
+
+ market_data_ser-54815                16.27 msec task-clock                       #    0.002 CPUs utilized             
+    mde-producer-54817              9126.52 msec task-clock                       #    0.912 CPUs utilized             
+    mde-worker-0-54818              9175.48 msec task-clock                       #    0.917 CPUs utilized             
+    mde-worker-1-54819              9399.45 msec task-clock                       #    0.939 CPUs utilized             
+    mde-acceptor-54820                 2.06 msec task-clock                       #    0.000 CPUs utilized             
+ market_data_ser-54815                 2592      context-switches                 #  159.345 K/sec                     
+    mde-producer-54817                16871      context-switches                 #    1.849 K/sec                     
+    mde-worker-0-54818                19053      context-switches                 #    2.077 K/sec                     
+    mde-worker-1-54819                13248      context-switches                 #    1.409 K/sec                     
+    mde-acceptor-54820                  199      context-switches                 #   96.438 K/sec                     
+ market_data_ser-54815                    2      cpu-migrations                   #  122.951 /sec                      
+    mde-producer-54817                   63      cpu-migrations                   #    6.903 /sec                      
+    mde-worker-0-54818                   55      cpu-migrations                   #    5.994 /sec                      
+    mde-worker-1-54819                   39      cpu-migrations                   #    4.149 /sec                      
+    mde-acceptor-54820                    8      cpu-migrations                   #    3.877 K/sec                     
+ market_data_ser-54815                    0      page-faults                      #    0.000 /sec                      
+    mde-producer-54817                    0      page-faults                      #    0.000 /sec                      
+    mde-worker-0-54818                    0      page-faults                      #    0.000 /sec                      
+    mde-worker-1-54819                    0      page-faults                      #    0.000 /sec                      
+    mde-acceptor-54820                    0      page-faults                      #    0.000 /sec                      
+ market_data_ser-54815      <not supported>      cycles                                                                
+    mde-producer-54817      <not supported>      cycles                                                                
+    mde-worker-0-54818      <not supported>      cycles                                                                
+    mde-worker-1-54819      <not supported>      cycles                                                                
+    mde-acceptor-54820      <not supported>      cycles                                                                
+ market_data_ser-54815      <not supported>      instructions                                                          
+    mde-producer-54817      <not supported>      instructions                                                          
+    mde-worker-0-54818      <not supported>      instructions                                                          
+    mde-worker-1-54819      <not supported>      instructions                                                          
+    mde-acceptor-54820      <not supported>      instructions                                                          
+
+      10.008909733 seconds time elapsed
+

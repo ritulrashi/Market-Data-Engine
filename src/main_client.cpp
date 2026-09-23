@@ -41,6 +41,7 @@ int main(int argc, char** argv) {
     const std::uint16_t port = static_cast<std::uint16_t>(arg_u64(argc, argv, "--port", 9001));
     const std::size_t clients = static_cast<std::size_t>(arg_u64(argc, argv, "--clients", 1));
     const std::uint64_t duration_s = arg_u64(argc, argv, "--duration", 20);
+    const bool record_latency = arg_u64(argc, argv, "--record-latency", 1) != 0;
 
     std::vector<mde::ClientResult> results(clients);
     std::vector<std::jthread> threads;
@@ -49,7 +50,7 @@ int main(int argc, char** argv) {
     const auto duration = std::chrono::seconds(duration_s);
     for (std::size_t i = 0; i < clients; ++i) {
         threads.emplace_back([&, i] {
-            mde::TickClient client(host, port);
+            mde::TickClient client(host, port, record_latency);
             results[i] = client.run_for(duration);
         });
     }

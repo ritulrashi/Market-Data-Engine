@@ -29,7 +29,7 @@ profile() {
         > "$OUT_DIR/${tag}_server.log" 2>&1 &
     local spid=$!
     sleep 1.5
-    "$BUILD_DIR/market_data_client" --port "$port" --clients "$CLIENTS" --duration 30 \
+    "$BUILD_DIR/market_data_client" --port "$port" --clients "$CLIENTS" --duration 30 --record-latency 0 \
         > "$OUT_DIR/${tag}_client.log" 2>&1 &
     local cpid=$!
     sleep 3 # let the load reach steady state
@@ -44,7 +44,9 @@ profile() {
         --percent-limit 2 -g caller,0.5,callee --max-stack 12 > "$OUT_DIR/${tag}_perf_callgraph.txt" 2>/dev/null
     sudo rm -f "$OUT_DIR/${tag}_perf.data" "$OUT_DIR/${tag}_perf.data.old"
 
-    wait "$cpid"
+    local cstatus=0
+    wait "$cpid" || cstatus=$?
+    [[ $cstatus -ne 0 ]] && echo "WARNING: client exited with status $cstatus" >&2
     kill -INT "$spid"
     wait "$spid" || true
     echo "$tag done" >&2

@@ -11,13 +11,13 @@
 
 namespace mde {
 
-TickClient::TickClient(std::string host, std::uint16_t port)
-    : host_(std::move(host)), port_(port) {}
+TickClient::TickClient(std::string host, std::uint16_t port, bool record_latency)
+    : host_(std::move(host)), port_(port), record_latency_(record_latency) {}
 
 ClientResult TickClient::run_for(std::chrono::steady_clock::duration duration,
                                  const TickCallback& on_tick) {
     ClientResult result;
-    result.latency_ns.reserve(1u << 20);
+    if (record_latency_) result.latency_ns.reserve(1u << 20);
 
     int fd = ::socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0) {
@@ -64,8 +64,10 @@ ClientResult TickClient::run_for(std::chrono::steady_clock::duration duration,
             for (; off + kWireMessageSize <= have; off += kWireMessageSize) {
                 const TickMessage tick = decode_tick(buf.data() + off);
                 ++result.received;
-                result.latency_ns.push_back(static_cast<std::int64_t>(now_ns) -
-                                            static_cast<std::int64_t>(tick.timestamp_ns));
+                if (record_latency_) {
+                    result.latency_ns.push_back(static_cast<std::int64_t>(now_ns) -
+                                                static_cast<std::int64_t>(tick.timestamp_ns));
+                }
                 if (on_tick) on_tick(tick);
             }
             // Move any trailing partial message to the front of the buffer.

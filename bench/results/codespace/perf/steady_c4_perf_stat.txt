@@ -1,0 +1,38 @@
+# started on Wed Sep 23 03:40:39 2026
+
+
+ Performance counter stats for process id '55262':
+
+ market_data_ser-55262                 0.69 msec task-clock                       #    0.000 CPUs utilized             
+    mde-producer-55264              1193.13 msec task-clock                       #    0.119 CPUs utilized             
+    mde-worker-0-55265              9901.64 msec task-clock                       #    0.990 CPUs utilized             
+    mde-worker-1-55266              9850.25 msec task-clock                       #    0.985 CPUs utilized             
+    mde-acceptor-55267                 1.92 msec task-clock                       #    0.000 CPUs utilized             
+ market_data_ser-55262                   25      context-switches                 #   36.048 K/sec                     
+    mde-producer-55264                74485      context-switches                 #   62.428 K/sec                     
+    mde-worker-0-55265                 1931      context-switches                 #  195.018 /sec                      
+    mde-worker-1-55266                 3475      context-switches                 #  352.783 /sec                      
+    mde-acceptor-55267                  200      context-switches                 #  104.265 K/sec                     
+ market_data_ser-55262                    4      cpu-migrations                   #    5.768 K/sec                     
+    mde-producer-55264                   65      cpu-migrations                   #   54.478 /sec                      
+    mde-worker-0-55265                   22      cpu-migrations                   #    2.222 /sec                      
+    mde-worker-1-55266                   22      cpu-migrations                   #    2.233 /sec                      
+    mde-acceptor-55267                    4      cpu-migrations                   #    2.085 K/sec                     
+ market_data_ser-55262                    0      page-faults                      #    0.000 /sec                      
+    mde-producer-55264                    0      page-faults                      #    0.000 /sec                      
+    mde-worker-0-55265                    2      page-faults                      #    0.202 /sec                      
+    mde-worker-1-55266                    1      page-faults                      #    0.102 /sec                      
+    mde-acceptor-55267                    0      page-faults                      #    0.000 /sec                      
+ market_data_ser-55262      <not supported>      cycles                                                                
+    mde-producer-55264      <not supported>      cycles                                                                
+    mde-worker-0-55265      <not supported>      cycles                                                                
+    mde-worker-1-55266      <not supported>      cycles                                                                
+    mde-acceptor-55267      <not supported>      cycles                                                                
+ market_data_ser-55262      <not supported>      instructions                                                          
+    mde-producer-55264      <not supported>      instructions                                                          
+    mde-worker-0-55265      <not supported>      instructions                                                          
+    mde-worker-1-55266      <not supported>      instructions                                                          
+    mde-acceptor-55267      <not supported>      instructions                                                          
+
+      10.004780399 seconds time elapsed
+

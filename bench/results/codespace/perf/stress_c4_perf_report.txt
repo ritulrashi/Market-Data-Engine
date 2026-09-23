@@ -1,0 +1,31 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 27K of event 'task-clock:ppp'
+# Event count (approx.): 27129129102
+#
+# Overhead  Command          Shared Object        Symbol                                                                                                                                                                                                                                 IPC   [IPC Coverage]
+# ........  ...............  ...................  .....................................................................................................................................................................................................................................  ....................
+#
+    18.16%  mde-worker-0     market_data_server   [.] mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const                                                                                                                                      -      -            
+    17.53%  mde-worker-1     market_data_server   [.] mde::BroadcastServer::start()::{lambda(std::stop_token)#1}::operator()(std::stop_token) const                                                                                                                                      -      -            
+    12.25%  mde-producer     market_data_server   [.] mde::TickProducer::step_symbol(mde::SymbolState&)                                                                                                                                                                                  -      -            
+     8.01%  mde-producer     [vdso]               [.] 0x0000000000000b5c                                                                                                                                                                                                                 -      -            
+     4.97%  mde-producer     market_data_server   [.] mde::TickProducer::run(std::stop_token, unsigned long)                                                                                                                                                                             -      -            
+     3.26%  mde-worker-0     [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore                                                                                                                                                                                                        -      -            
+     3.04%  mde-worker-1     [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore                                                                                                                                                                                                        -      -            
+     2.60%  mde-producer     libm.so.6            [.] __ieee754_log_fma                                                                                                                                                                                                                  -      -            
+     1.05%  mde-worker-1     libc.so.6            [.] epoll_wait                                                                                                                                                                                                                         -      -            
+     0.96%  mde-worker-0     libc.so.6            [.] epoll_wait                                                                                                                                                                                                                         -      -            
+     0.75%  mde-producer     market_data_server   [.] std::mersenne_twister_engine<unsigned long, 64ul, 312ul, 156ul, 31ul, 13043109905998158313ul, 29ul, 6148914691236517205ul, 17ul, 8202884508482404352ul, 37ul, 18444473444759240704ul, 43ul, 6364136223846793005ul>::_M_gen_rand()  -      -            
+     0.69%  mde-producer     libstdc++.so.6.0.33  [.] std::chrono::_V2::system_clock::now()                                                                                                                                                                                              -      -            
+     0.66%  mde-worker-1     [kernel.kallsyms]    [k] _copy_from_iter                                                                                                                                                                                                                    -      -            
+     0.63%  mde-worker-0     [kernel.kallsyms]    [k] _copy_from_iter                                                                                                                                                                                                                    -      -            
+     0.56%  mde-worker-0     [kernel.kallsyms]    [k] clear_page_erms                                                                                                                                                                                                                    -      -            
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

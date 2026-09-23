@@ -1,0 +1,34 @@
+market_data_server listening on port 9501 with 2 worker thread(s), 10 symbols, ring capacity 65536, rate=unthrottled
+STATS t=1 produced=11175426 clients=0 accepted=0 sent=0 dropped=0
+STATS t=2 produced=21969128 clients=4 accepted=4 sent=21786807 dropped=515956
+STATS t=3 produced=32847097 clients=4 accepted=4 sent=64616506 dropped=1269397
+STATS t=4 produced=43774700 clients=4 accepted=4 sent=107549166 dropped=2176572
+STATS t=5 produced=54004247 clients=4 accepted=4 sent=146826112 dropped=3137889
+STATS t=6 produced=64975831 clients=4 accepted=4 sent=191053019 dropped=3477243
+STATS t=7 produced=75066706 clients=4 accepted=4 sent=229549372 dropped=4766629
+STATS t=8 produced=85443807 clients=4 accepted=4 sent=271279183 dropped=5121684
+STATS t=9 produced=95474804 clients=4 accepted=4 sent=310791610 dropped=5734544
+STATS t=10 produced=106155050 clients=4 accepted=4 sent=351558995 dropped=5798777
+STATS t=11 produced=118030066 clients=4 accepted=4 sent=398003296 dropped=6758919
+STATS t=12 produced=127556836 clients=4 accepted=4 sent=436029823 dropped=8659805
+STATS t=13 produced=138288511 clients=4 accepted=4 sent=477105662 dropped=10575890
+STATS t=14 produced=148124412 clients=4 accepted=4 sent=516045061 dropped=10770323
+STATS t=15 produced=157698995 clients=4 accepted=4 sent=551455463 dropped=13943280
+STATS t=16 produced=167089576 clients=4 accepted=4 sent=588884121 dropped=14083992
+STATS t=17 produced=177464646 clients=4 accepted=4 sent=627923758 dropped=16486074
+STATS t=18 produced=187252691 clients=4 accepted=4 sent=666030287 dropped=17607415
+STATS t=19 produced=196512668 clients=4 accepted=4 sent=702761490 dropped=17916120
+STATS t=20 produced=205251804 clients=4 accepted=4 sent=737318976 dropped=18300706
+STATS t=21 produced=214977543 clients=4 accepted=4 sent=776236404 dropped=18300706
+STATS t=22 produced=222922385 clients=4 accepted=4 sent=806933325 dropped=19383153
+STATS t=23 produced=233365300 clients=4 accepted=4 sent=847862074 dropped=20216312
+STATS t=24 produced=242429758 clients=4 accepted=4 sent=883814772 dropped=20361114
+STATS t=25 produced=252742044 clients=4 accepted=4 sent=924664929 dropped=20361114
+STATS t=26 produced=263846104 clients=4 accepted=4 sent=967148256 dropped=21859611
+STATS t=27 produced=274188632 clients=4 accepted=4 sent=1004839219 dropped=25934239
+STATS t=28 produced=283906017 clients=4 accepted=4 sent=1043599343 dropped=26624878
+STATS t=29 produced=293643377 clients=4 accepted=4 sent=1082201623 dropped=26735024
+STATS t=30 produced=304015555 clients=4 accepted=4 sent=1123393036 dropped=27125818
+STATS t=31 produced=314264743 clients=0 accepted=4 sent=1156974786 dropped=27498790
+shutting down...
+FINAL produced=314265167 accepted=4 sent=1156974786 dropped=27498790

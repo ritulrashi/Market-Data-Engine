@@ -1,0 +1,2 @@
+[ perf record: Woken up 12 times to write data ]
+[ perf record: Captured and wrote 3.203 MB /workspaces/Market-Data-Engine/bench/results/codespace/perf/steady_c4_perf.data (19656 samples) ]
