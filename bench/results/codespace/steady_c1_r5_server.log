@@ -1,0 +1,15 @@
+market_data_server listening on port 9426 with 2 worker thread(s), 10 symbols, ring capacity 65536, rate=200000/s
+STATS t=1 produced=200049 clients=0 accepted=0 sent=0 dropped=0
+STATS t=2 produced=400499 clients=1 accepted=1 sent=100337 dropped=0
+STATS t=3 produced=600523 clients=1 accepted=1 sent=300361 dropped=0
+STATS t=4 produced=800574 clients=1 accepted=1 sent=500412 dropped=0
+STATS t=5 produced=1000603 clients=1 accepted=1 sent=700441 dropped=0
+STATS t=6 produced=1200660 clients=1 accepted=1 sent=900498 dropped=0
+STATS t=7 produced=1400691 clients=1 accepted=1 sent=1100529 dropped=0
+STATS t=8 produced=1600726 clients=1 accepted=1 sent=1300564 dropped=0
+STATS t=9 produced=1800771 clients=1 accepted=1 sent=1500609 dropped=0
+STATS t=10 produced=2000797 clients=1 accepted=1 sent=1700635 dropped=0
+STATS t=11 produced=2200849 clients=1 accepted=1 sent=1900663 dropped=0
+STATS t=12 produced=2400925 clients=0 accepted=1 sent=2000007 dropped=0
+shutting down...
+FINAL produced=2400991 accepted=1 sent=2000007 dropped=0

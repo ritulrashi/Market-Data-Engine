@@ -1,0 +1,13 @@
+CLIENTS=12 DURATION_S=10 MEAN_ELAPSED_S=10.173 TOTAL_RECEIVED=403318336 AGGREGATE_TPS=39660413.7 PER_CONSUMER_TPS=3305034.5 SAMPLES=403318336 P50_US=7064.0 P99_US=293270.9 P999_US=594319.4 MAX_US=694260.1
+  client[0] received=34586253 elapsed_s=10.000
+  client[1] received=33556810 elapsed_s=10.209
+  client[2] received=33489118 elapsed_s=10.015
+  client[3] received=33555541 elapsed_s=10.097
+  client[4] received=33164574 elapsed_s=10.009
+  client[5] received=33555940 elapsed_s=10.138
+  client[6] received=33554882 elapsed_s=10.407
+  client[7] received=33488679 elapsed_s=10.006
+  client[8] received=33556129 elapsed_s=10.372
+  client[9] received=33555449 elapsed_s=10.477
+  client[10] received=33698770 elapsed_s=10.001
+  client[11] received=33556191 elapsed_s=10.340
