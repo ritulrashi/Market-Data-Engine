@@ -16,8 +16,18 @@ struct ClientResult {
     // denominator for throughput.
     std::chrono::nanoseconds elapsed{0};
     // End-to-end latency of *every* received message (recv wall clock -
-    // producer publish timestamp), in nanoseconds, in arrival order.
-    std::vector<std::int64_t> latency_ns;
+    // producer publish timestamp), in nanoseconds, in arrival order, stored
+    // as fixed-size chunks. A single growing vector was a measurement bug:
+    // each doubling copied hundreds of MB and page-faulted fresh memory on
+    // the receiving thread, stalling it for 100+ ms and inflating the
+    // measured tail latency. Chunks are never moved once allocated.
+    static constexpr std::size_t kLatencyChunk = 64 * 1024; // 512 KB
+    std::vector<std::vector<std::int64_t>> latency_chunks;
+    std::uint64_t latency_count() const noexcept {
+        std::uint64_t n = 0;
+        for (const auto& c : latency_chunks) n += c.size();
+        return n;
+    }
     bool server_closed = false; // true if the server closed the connection first
 };
 

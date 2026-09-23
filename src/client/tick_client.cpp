@@ -17,7 +17,6 @@ TickClient::TickClient(std::string host, std::uint16_t port, bool record_latency
 ClientResult TickClient::run_for(std::chrono::steady_clock::duration duration,
                                  const TickCallback& on_tick) {
     ClientResult result;
-    if (record_latency_) result.latency_ns.reserve(1u << 20);
 
     int fd = ::socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0) {
@@ -65,8 +64,12 @@ ClientResult TickClient::run_for(std::chrono::steady_clock::duration duration,
                 const TickMessage tick = decode_tick(buf.data() + off);
                 ++result.received;
                 if (record_latency_) {
-                    result.latency_ns.push_back(static_cast<std::int64_t>(now_ns) -
-                                                static_cast<std::int64_t>(tick.timestamp_ns));
+                    if (result.latency_chunks.empty() ||
+                        result.latency_chunks.back().size() == ClientResult::kLatencyChunk) {
+                        result.latency_chunks.emplace_back().reserve(ClientResult::kLatencyChunk);
+                    }
+                    result.latency_chunks.back().push_back(static_cast<std::int64_t>(now_ns) -
+                                                           static_cast<std::int64_t>(tick.timestamp_ns));
                 }
                 if (on_tick) on_tick(tick);
             }

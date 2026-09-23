@@ -59,14 +59,16 @@ int main(int argc, char** argv) {
     std::uint64_t total_received = 0;
     double sum_elapsed_s = 0.0;
     std::size_t total_samples = 0;
-    for (auto& r : results) total_samples += r.latency_ns.size();
+    for (auto& r : results) total_samples += r.latency_count();
     std::vector<std::int64_t> pooled_latency_ns;
     pooled_latency_ns.reserve(total_samples);
     for (auto& r : results) {
         total_received += r.received;
         sum_elapsed_s += std::chrono::duration<double>(r.elapsed).count();
-        pooled_latency_ns.insert(pooled_latency_ns.end(), r.latency_ns.begin(), r.latency_ns.end());
-        r.latency_ns = {};
+        for (auto& chunk : r.latency_chunks) {
+            pooled_latency_ns.insert(pooled_latency_ns.end(), chunk.begin(), chunk.end());
+            chunk = {}; // free as we go to limit peak memory
+        }
     }
 
     const double p50_us = static_cast<double>(percentile_ns(pooled_latency_ns, 0.50)) / 1000.0;
