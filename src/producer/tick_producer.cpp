@@ -41,7 +41,7 @@ void TickProducer::step_symbol(SymbolState& s) {
     }
 }
 
-void TickProducer::run(std::stop_token stop_token) {
+void TickProducer::run(std::stop_token stop_token, std::uint64_t max_ticks) {
     const std::size_t n = symbols_.size();
     std::size_t next_symbol = 0;
 
@@ -53,7 +53,8 @@ void TickProducer::run(std::stop_token stop_token) {
                   : std::chrono::nanoseconds(0);
     auto next_send_time = std::chrono::steady_clock::now();
 
-    while (!stop_token.stop_requested()) {
+    std::uint64_t published = 0;
+    while (!stop_token.stop_requested() && (max_ticks == 0 || published < max_ticks)) {
         SymbolState& s = symbols_[next_symbol];
         next_symbol = (next_symbol + 1) % n;
 
@@ -71,6 +72,7 @@ void TickProducer::run(std::stop_token stop_token) {
 
         ring_.publish(tick);
         ticks_published_.fetch_add(1, std::memory_order_relaxed);
+        ++published;
 
         if (throttled) {
             next_send_time += interval;

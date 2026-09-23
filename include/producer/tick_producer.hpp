@@ -34,7 +34,9 @@ public:
     TickProducer(TickRingBuffer& ring, std::size_t symbol_count,
                  std::uint64_t rate_per_sec, std::uint64_t seed = 0);
 
-    void run(std::stop_token stop_token);
+    // Publishes until stop is requested or, if max_ticks > 0, until
+    // max_ticks ticks have been published.
+    void run(std::stop_token stop_token, std::uint64_t max_ticks = 0);
 
     std::uint64_t ticks_published() const noexcept {
         return ticks_published_.load(std::memory_order_relaxed);
