@@ -1,0 +1,22 @@
+market_data_server listening on port 9407 with 2 worker thread(s), 10 symbols, ring capacity 65536, rate=unthrottled
+STATS t=1 produced=11378388 clients=0 accepted=0 sent=0 dropped=0
+STATS t=2 produced=21740106 clients=12 accepted=12 sent=26334245 dropped=28972889
+STATS t=3 produced=32073291 clients=12 accepted=12 sent=75677353 dropped=93867027
+STATS t=4 produced=41918448 clients=12 accepted=12 sent=129150110 dropped=166399405
+STATS t=5 produced=52375854 clients=12 accepted=12 sent=178519213 dropped=239132642
+STATS t=6 produced=61370217 clients=12 accepted=12 sent=228037931 dropped=302096162
+STATS t=7 produced=70672116 clients=12 accepted=12 sent=277541417 dropped=359870304
+STATS t=8 produced=81181549 clients=12 accepted=12 sent=332316863 dropped=436021016
+STATS t=9 produced=93596038 clients=12 accepted=12 sent=390047420 dropped=504579593
+STATS t=11 produced=103101704 clients=12 accepted=12 sent=447588376 dropped=583817965
+STATS t=12 produced=113334216 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=13 produced=124243566 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=14 produced=133947900 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=15 produced=144892823 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=16 produced=155743095 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=17 produced=165777915 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=18 produced=176754214 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=19 produced=187309034 clients=0 accepted=12 sent=458763933 dropped=600200922
+STATS t=20 produced=199357916 clients=0 accepted=12 sent=458763933 dropped=600200922
+shutting down...
+FINAL produced=199358354 accepted=12 sent=458763933 dropped=600200922
