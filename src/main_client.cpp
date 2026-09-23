@@ -2,9 +2,10 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
+#include <iomanip>
 #include <cstdint>
 #include <iostream>
-#include <numeric>
 #include <string>
 #include <thread>
 #include <vector>
@@ -23,13 +24,15 @@ std::uint64_t arg_u64(int argc, char** argv, const std::string& name, std::uint6
     return def;
 }
 
-double percentile_ns(std::vector<std::int64_t>& sorted, double p) {
-    if (sorted.empty()) return 0.0;
-    const double rank = p * (static_cast<double>(sorted.size()) - 1.0);
-    const std::size_t lo = static_cast<std::size_t>(rank);
-    const std::size_t hi = std::min(lo + 1, sorted.size() - 1);
-    const double frac = rank - static_cast<double>(lo);
-    return static_cast<double>(sorted[lo]) * (1.0 - frac) + static_cast<double>(sorted[hi]) * frac;
+// Nearest-rank percentile: returns an actual observed sample (no
+// interpolation). Reorders `v` partially via nth_element.
+std::int64_t percentile_ns(std::vector<std::int64_t>& v, double p) {
+    if (v.empty()) return 0;
+    std::size_t rank = static_cast<std::size_t>(std::ceil(p * static_cast<double>(v.size())));
+    if (rank == 0) rank = 1;
+    auto nth = v.begin() + static_cast<std::ptrdiff_t>(rank - 1);
+    std::nth_element(v.begin(), nth, v.end());
+    return *nth;
 }
 } // namespace
 
@@ -53,28 +56,49 @@ int main(int argc, char** argv) {
     for (auto& t : threads) t.join();
 
     std::uint64_t total_received = 0;
+    double sum_elapsed_s = 0.0;
+    std::size_t total_samples = 0;
+    for (auto& r : results) total_samples += r.latency_ns.size();
     std::vector<std::int64_t> pooled_latency_ns;
+    pooled_latency_ns.reserve(total_samples);
     for (auto& r : results) {
         total_received += r.received;
-        pooled_latency_ns.insert(pooled_latency_ns.end(), r.latency_samples_ns.begin(),
-                                  r.latency_samples_ns.end());
+        sum_elapsed_s += std::chrono::duration<double>(r.elapsed).count();
+        pooled_latency_ns.insert(pooled_latency_ns.end(), r.latency_ns.begin(), r.latency_ns.end());
+        r.latency_ns = {};
     }
-    std::sort(pooled_latency_ns.begin(), pooled_latency_ns.end());
 
-    const double p50_us = percentile_ns(pooled_latency_ns, 0.50) / 1000.0;
-    const double p99_us = percentile_ns(pooled_latency_ns, 0.99) / 1000.0;
-    const double p999_us = percentile_ns(pooled_latency_ns, 0.999) / 1000.0;
+    const double p50_us = static_cast<double>(percentile_ns(pooled_latency_ns, 0.50)) / 1000.0;
+    const double p99_us = static_cast<double>(percentile_ns(pooled_latency_ns, 0.99)) / 1000.0;
+    const double p999_us = static_cast<double>(percentile_ns(pooled_latency_ns, 0.999)) / 1000.0;
+    const double max_us = pooled_latency_ns.empty()
+                              ? 0.0
+                              : static_cast<double>(*std::max_element(pooled_latency_ns.begin(),
+                                                                      pooled_latency_ns.end())) / 1000.0;
 
-    const double aggregate_tps = static_cast<double>(total_received) / static_cast<double>(duration_s);
+    // Each client's throughput uses its own measured connect-to-close time;
+    // aggregate = sum of per-client rates.
+    double aggregate_tps = 0.0;
+    for (auto& r : results) {
+        const double s = std::chrono::duration<double>(r.elapsed).count();
+        if (s > 0) aggregate_tps += static_cast<double>(r.received) / s;
+    }
     const double per_consumer_tps = clients > 0 ? aggregate_tps / static_cast<double>(clients) : 0.0;
 
+    std::cout << std::fixed << std::setprecision(1);
     std::cout << "CLIENTS=" << clients << " DURATION_S=" << duration_s
+              << " MEAN_ELAPSED_S=" << std::setprecision(3)
+              << (clients ? sum_elapsed_s / static_cast<double>(clients) : 0.0) << std::setprecision(1)
               << " TOTAL_RECEIVED=" << total_received << " AGGREGATE_TPS=" << aggregate_tps
               << " PER_CONSUMER_TPS=" << per_consumer_tps << " SAMPLES=" << pooled_latency_ns.size()
-              << " P50_US=" << p50_us << " P99_US=" << p99_us << " P999_US=" << p999_us << std::endl;
+              << " P50_US=" << p50_us << " P99_US=" << p99_us << " P999_US=" << p999_us
+              << " MAX_US=" << max_us << std::endl;
 
     for (std::size_t i = 0; i < clients; ++i) {
-        std::cout << "  client[" << i << "] received=" << results[i].received << std::endl;
+        std::cout << "  client[" << i << "] received=" << results[i].received
+                  << " elapsed_s=" << std::setprecision(3)
+                  << std::chrono::duration<double>(results[i].elapsed).count()
+                  << std::setprecision(1) << std::endl;
     }
 
     return 0;

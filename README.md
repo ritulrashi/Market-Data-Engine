@@ -35,3 +35,16 @@ Run tests via CTest from a build directory:
 ```
 ctest --test-dir build
 ```
+
+## Wire format
+
+Every message is exactly 24 bytes, sent back to back on the TCP stream with
+no length prefix. All fields are little-endian; see `encode_tick` /
+`decode_tick` in `include/protocol/tick.hpp`.
+
+| Offset | Size | Field          | Type                                  |
+|-------:|-----:|----------------|---------------------------------------|
+| 0      | 4    | `symbol_id`    | `uint32`                              |
+| 4      | 8    | `price`        | IEEE-754 binary64 (`double`)          |
+| 12     | 4    | `size`         | `uint32`                              |
+| 16     | 8    | `timestamp_ns` | `uint64`, ns since Unix epoch (producer wall clock) |

@@ -35,7 +35,10 @@ public:
     BroadcastServer& operator=(const BroadcastServer&) = delete;
 
     // Opens the listening socket and starts the acceptor + worker threads.
+    // A port of 0 binds an ephemeral port; port() returns the real one.
     void start();
+
+    std::uint16_t port() const noexcept { return port_; }
 
     // Signals every thread to stop and joins them. Safe to call from the
     // destructor if not called explicitly.

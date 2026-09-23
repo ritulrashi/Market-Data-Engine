@@ -1,5 +1,4 @@
 #include "client/tick_client.hpp"
-#include "protocol/tick.hpp"
 
 #include <arpa/inet.h>
 #include <cerrno>
@@ -15,9 +14,10 @@ namespace mde {
 TickClient::TickClient(std::string host, std::uint16_t port)
     : host_(std::move(host)), port_(port) {}
 
-ClientResult TickClient::run_for(std::chrono::steady_clock::duration duration) {
+ClientResult TickClient::run_for(std::chrono::steady_clock::duration duration,
+                                 const TickCallback& on_tick) {
     ClientResult result;
-    result.latency_samples_ns.reserve(1u << 20);
+    result.latency_ns.reserve(1u << 20);
 
     int fd = ::socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0) {
@@ -43,40 +43,45 @@ ClientResult TickClient::run_for(std::chrono::steady_clock::duration duration) {
     tv.tv_usec = 200000; // 200ms, so a blocked recv still rechecks the deadline
     ::setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
-    constexpr std::uint64_t kSampleStride = 64;
-    std::uint64_t idx = 0;
+    // Read in large chunks and decode every complete message in the chunk:
+    // one recv() per 24-byte message made the client, not the server, the
+    // throughput bottleneck.
+    constexpr std::size_t kBufSize = 64 * 1024;
+    std::vector<std::uint8_t> buf(kBufSize);
+    std::size_t have = 0; // bytes currently buffered (a partial message may carry over)
 
-    std::uint8_t buf[kWireMessageSize];
-    std::size_t got = 0;
-    const auto deadline = std::chrono::steady_clock::now() + duration;
+    const auto start = std::chrono::steady_clock::now();
+    const auto deadline = start + duration;
 
-    while (true) {
-        if (std::chrono::steady_clock::now() >= deadline) break;
-
-        ssize_t n = ::recv(fd, buf + got, kWireMessageSize - got, 0);
+    while (std::chrono::steady_clock::now() < deadline) {
+        ssize_t n = ::recv(fd, buf.data() + have, kBufSize - have, 0);
         if (n > 0) {
-            got += static_cast<std::size_t>(n);
-            if (got < kWireMessageSize) continue;
-
+            have += static_cast<std::size_t>(n);
             const auto now_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
-                                     std::chrono::system_clock::now().time_since_epoch())
-                                     .count();
-            TickMessage tick;
-            std::memcpy(&tick, buf, kWireMessageSize);
-            got = 0;
-
-            ++result.received;
-            if ((idx++ % kSampleStride) == 0) {
-                result.latency_samples_ns.push_back(static_cast<std::int64_t>(now_ns) -
-                                                      static_cast<std::int64_t>(tick.timestamp_ns));
+                                    std::chrono::system_clock::now().time_since_epoch())
+                                    .count();
+            std::size_t off = 0;
+            for (; off + kWireMessageSize <= have; off += kWireMessageSize) {
+                const TickMessage tick = decode_tick(buf.data() + off);
+                ++result.received;
+                result.latency_ns.push_back(static_cast<std::int64_t>(now_ns) -
+                                            static_cast<std::int64_t>(tick.timestamp_ns));
+                if (on_tick) on_tick(tick);
             }
+            // Move any trailing partial message to the front of the buffer.
+            if (off < have) std::memmove(buf.data(), buf.data() + off, have - off);
+            have -= off;
             continue;
         }
-        if (n == 0) break; // server closed the connection
+        if (n == 0) {
+            result.server_closed = true;
+            break;
+        }
         if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) continue; // recv timeout, recheck deadline
         break; // real error
     }
 
+    result.elapsed = std::chrono::steady_clock::now() - start;
     ::close(fd);
     return result;
 }

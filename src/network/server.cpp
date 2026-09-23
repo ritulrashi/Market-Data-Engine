@@ -20,7 +20,12 @@ namespace mde {
 namespace {
 constexpr int kMaxEvents = 256;
 constexpr std::size_t kMaxBatchPerIter = 8192;      // ticks drained per client per loop pass
-constexpr std::size_t kMaxPendingBytes = 8 * 1024 * 1024; // backpressure cap per client
+// Backpressure cap per client. Kept small on purpose: once a slow client
+// has this much unsent data queued, the worker stops reading the ring for
+// it, so under overload the ring's drop-oldest policy discards stale ticks
+// instead of this queue delivering them late. (Was 8 MB, ~350k ticks,
+// which added ~1 s of queueing latency under overload.)
+constexpr std::size_t kMaxPendingBytes = 64 * 1024;
 
 void set_nonblocking(int fd) {
     int flags = ::fcntl(fd, F_GETFL, 0);
@@ -67,12 +72,17 @@ void BroadcastServer::start() {
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(port_);
 
-    if (::bind(listen_fd_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0) {
-        throw std::runtime_error(std::string("bind() failed: ") + std::strerror(errno));
+    if (::bind(listen_fd_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0 ||
+        ::listen(listen_fd_, 1024) < 0) {
+        const std::string err = std::strerror(errno);
+        ::close(listen_fd_);
+        listen_fd_ = -1;
+        throw std::runtime_error("bind()/listen() failed: " + err);
     }
-    if (::listen(listen_fd_, 1024) < 0) {
-        throw std::runtime_error(std::string("listen() failed: ") + std::strerror(errno));
-    }
+    // Port 0 asks the kernel for an ephemeral port; record what we got.
+    socklen_t len = sizeof(addr);
+    ::getsockname(listen_fd_, reinterpret_cast<sockaddr*>(&addr), &len);
+    port_ = ntohs(addr.sin_port);
     set_nonblocking(listen_fd_);
 
     workers_.reserve(worker_count_);
@@ -158,8 +168,9 @@ void BroadcastServer::start() {
                         while (!broken && batch < kMaxBatchPerIter &&
                                (c.pending.size() - c.pending_offset) < kMaxPendingBytes) {
                             if (!ring_.try_read(c.consumer, tick)) break;
-                            const auto* raw = reinterpret_cast<const std::uint8_t*>(&tick);
-                            c.pending.insert(c.pending.end(), raw, raw + kWireMessageSize);
+                            const std::size_t at = c.pending.size();
+                            c.pending.resize(at + kWireMessageSize);
+                            encode_tick(tick, c.pending.data() + at);
                             ++batch;
                         }
                         flush();
