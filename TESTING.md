@@ -165,4 +165,66 @@ reading again. The first version of that test failed on exactly this.
 
 ## Correctness checks (sanitizers, Helgrind)
 
-See the next section (added in step 3).
+Each check uses its own build directory, separate from the Release
+benchmark build:
+
+```bash
+cmake -B build-tsan  -DCMAKE_BUILD_TYPE=Debug -DMDE_ENABLE_TSAN=ON && cmake --build build-tsan -j
+cmake -B build-asan  -DCMAKE_BUILD_TYPE=Debug -DMDE_ENABLE_ASAN=ON && cmake --build build-asan -j
+cmake -B build-debug -DCMAKE_BUILD_TYPE=Debug                      && cmake --build build-debug -j   # for Helgrind
+```
+
+### Results
+
+| Check | Workload | Result |
+|---|---|---|
+| TSan | `unit_tests` (23) | 23 pass, **0 TSan warnings** |
+| TSan | `integration_tests` (7) | 7 pass, **0 TSan warnings** |
+| TSan | TSan server (4 workers) + 12 TSan client connections, 200k ticks/s, 15 s | **0 warnings**, both exit 0 |
+| TSan | same, unthrottled producer, 15 s | **0 warnings**, both exit 0 |
+| ASan + LSan | `unit_tests`, `integration_tests` | 30 pass, **0 errors, 0 leaks** |
+| ASan + LSan | ASan server + 12 ASan clients, 200k/s and unthrottled, 15 s each | **0 errors, 0 leaks** |
+| Helgrind | `RingBufferConcurrent.*` (8, 6 and 4 consumer threads) | 3 pass, **0 errors** (14 hits from Valgrind's default glibc suppressions) |
+| Helgrind | Debug server (4 workers), 12 clients, 20k/s, 20 s | **0 errors** (565,349 hits from default suppression `helgrind-glibc2X-005`; see below) |
+
+Under TSan's slowdown the 12-client runs could not keep up (1.09M ticks/s
+delivered vs 2.4M needed at 200k/s). The TSan server recorded 7,096,904 dropped
+ticks in the steady run and 11,816,971 in the unthrottled run. That was useful:
+it means the lapping / drop-oldest / torn-read-retry paths ran under TSan, not
+just the happy path. The Helgrind server run also lapped (2,217,508 drops).
+
+**About the Helgrind suppressions.** `helgrind-glibc2X-005` hides any race
+whose top frame is anywhere in `libc.so.6`, which could in principle hide a
+race on our own data inside a libc call. So the server run was repeated with
+`--default-suppressions=no` (12 clients, 8 s). It produced 8 distinct
+contexts. We checked the top frames of all of them: every one is inside glibc
+itself (`pthread_mutex_lock` / `__pthread_mutex_unlock_usercnt` internals and
+`__set_vma_name` during thread stack setup). These are Helgrind's known false
+positives on glibc's own mutex implementation. None has a top frame in
+engine code.
+
+### Issues found in step 3 and how they were fixed
+
+1. **TSan could not start at all** (`FATAL: ThreadSanitizer: unexpected
+   memory mapping`), which also broke the build, because CMake's
+   `gtest_discover_tests` runs the binary after linking. Cause: the kernel
+   (6.8) uses 32 bits of mmap ASLR entropy, which GCC 13's TSan runtime does
+   not support. *Fix (environment, not code):*
+   `sudo sysctl -w vm.mmap_rnd_bits=28`. This does not persist across a
+   codespace restart; rerun it before building `build-tsan`.
+2. **No new data races, memory errors or leaks** were found in the engine by
+   TSan, ASan/LSan or Helgrind in this session, so no code fixes were needed
+   in step 3.
+
+### Limits of these checks (stated plainly)
+- GCC warns `'atomic_thread_fence' is not supported with '-fsanitize=thread'`.
+  TSan does not model standalone fences, so **TSan cannot verify the seqlock
+  fence fix (bug 3 above)**. That fix rests on the standard seqlock
+  argument, not on a tool result.
+- The ring buffer's payload words are `std::atomic<uint64_t>`, so no
+  race detector can flag a torn payload read as a *data race*. Torn reads are
+  instead checked functionally by `NoTornReadsUnderHeavyLapping`.
+- Earlier TSan findings (a plain-copy data race and an undetected
+  in-progress overwrite) are documented in the ring buffer header. They were
+  found and fixed on the previous machine, before this repo's first commit.
+  They could not be reproduced here because that history is not in git.
